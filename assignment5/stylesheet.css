@@ -1,0 +1,34 @@
+body {
+    background-color: beige;
+}
+#search-area {
+    width: 50%;
+    background-color: antiquewhite;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    border-style: solid;
+    border-radius: 10px;
+    font-size: 1.2em;
+}
+#search-box {
+    width: 100%;
+    
+}
+#list {
+    list-style-type: none;
+}
+.item {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: azure;
+    position: relative;
+}
+.images {
+    float: right;
+    clear: right;
+    visibility: hidden;
+    position: fixed;
+    
+}
