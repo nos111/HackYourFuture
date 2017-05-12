@@ -58,7 +58,7 @@ function createMoviesList (data) {
 
 
 
-/*
+
 // HomeWork using Jquery (makes it much shorter)
 $("#search-box").keyup(function(){
     var searchTerm = $("#search-box").val();
@@ -92,7 +92,7 @@ $("#search-box").keyup(function(){
     });
 
 });
-*/
+
 
 // My old homework 
 /*
