@@ -1,4 +1,4 @@
-
+// Please comment out one of the two scripts in order to keep everything working fine
 // Home work using only JavaScript with an extra condition to check if the search box is empty
 var searchBox = document.getElementById("search-box");
 var listDiv = document.getElementById("container");
