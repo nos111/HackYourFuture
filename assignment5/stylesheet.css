@@ -1,6 +1,11 @@
 body {
     background-color: beige;
 }
+#warning-message{
+    text-align: center;
+    font-size: 1.5em;
+    color: red;
+}
 #search-area {
     width: 50%;
     background-color: antiquewhite;

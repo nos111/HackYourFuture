@@ -1,98 +1,124 @@
 
 // Home work using only JavaScript with an extra condition to check if the search box is empty
 var searchBox = document.getElementById("search-box");
+var listDiv = document.getElementById("container");
+var moviesInfo;
+
+// This function will trigger the live search and will also check if the user hasn't entered any search term. It also check if search field is empty than it removes the eventlistener in order to keep any error messages from poping up
 searchBox.onkeyup = function(){
     var searchTerm = document.getElementById('search-box').value;
-    if (searchTerm != "") {
+    console.log(searchTerm);
+    if (searchTerm !== " " && searchTerm !== "") {
         getJsonFile(searchTerm);
         } else {
-        alert("Please enter a movie name");
         var listDiv = document.getElementById("container");
         listDiv.innerHTML = " ";
+        var warningMessageElement = document.createElement("p");
+        warningMessageElement.setAttribute("id","warning-message");
+        var warningMessageText = document.createTextNode("Sorry, We cant find any results for your search. Please enter other search terms");
+        warningMessageElement.appendChild(warningMessageText);
+        listDiv.appendChild(warningMessageElement);
+        document.removeEventListener("mouseover",mouseHover);
     }
 
 };
 
+// This function will get the data using the search term
 function getJsonFile (term) {
-    var jsonFile = "http://www.omdbapi.com/?s=" + term;
+    var dataFile = "http://www.omdbapi.com/?s=" + term;
     var jsonRequest = new XMLHttpRequest();
     jsonRequest.onreadystatechange = function () {
         if (jsonRequest.readyState === 4) {
             createMoviesList(jsonRequest);
         }
-    }  
-    jsonRequest.open("GET",jsonFile);
+    }; 
+    jsonRequest.open("GET",dataFile);
     jsonRequest.send();
 
-};
+}
 
+// this function will create the movies list and also check if we have got results from the website.
 function createMoviesList (data) {
     var parsedJson = JSON.parse(data.responseText);
-    var moviesInfo = parsedJson.Search;
-    var output = '<ul id= "list">';
-    for (var i = 0; i < moviesInfo.length; i++ ) {
-        output += '<li class="item" id="item' + i + '">';
-        output += '<a href=' + "http://www.imdb.com/title/" + moviesInfo[i].imdbID +'>';
-        output += '<h2 id="text' +i + '">' + moviesInfo[i].Title +' ' + moviesInfo[i].Year + '</h2>';
-        output += '<img id="img' + i + '" class="images"  src=' + moviesInfo[i].Poster +'>'
-        output += '</a>'
-        output += '</li>';
-    };
-    output += '</ul>'
-    var listDiv = document.getElementById("container");
-    listDiv.innerHTML = output;
-    document.onmouseover = function (e) {
-        for (var i =0; i<moviesInfo.length; i++) {
-            if (e.target.id == ("text" + i)) {
-                document.getElementById(("img"+i)).style.visibility = "visible";
-                document.getElementById(("item"+i)).style.height = "500px";
-            } else {
-                document.getElementById(("img"+i)).style.visibility = "hidden";
-                document.getElementById(("item" + i)).style.height = "auto";
-                }
+    if (parsedJson.Response === 'False') { //if there is no results the user will get an error message
+        listDiv.innerHTML = "";
+        var warningMessageElement = document.createElement("p");
+        warningMessageElement.setAttribute("id","warning-message");
+        var warningMessageText = document.createTextNode("Sorry, We cant find any results for your search. Please enter other search terms");
+        warningMessageElement.appendChild(warningMessageText);
+        listDiv.appendChild(warningMessageElement);
+        document.removeEventListener("mouseover",mouseHover);
+    } else {
+        moviesInfo = parsedJson.Search;
+        var output = '<ul id= "list">';
+        for (var i = 0; i < moviesInfo.length; i++ ) {
+            output += '<li class="item" id="item' + i + '">';
+            output += '<a href=' + "http://www.imdb.com/title/" + moviesInfo[i].imdbID +'>';
+            output += '<h2 id="text' +i + '">' + moviesInfo[i].Title +' ' + moviesInfo[i].Year + '</h2>';
+            output += '<img id="img' + i + '" class="images"  src=' + moviesInfo[i].Poster +'>';
+            output += '</a>';
+            output += '</li>';
         }
+        output += '</ul>';
+
+        listDiv.innerHTML = output;
+        document.addEventListener("mouseover",mouseHover);
     }
 
+}
+
+//This function will track the hover of the mouse and will make the photo visible when hovered over the h2 element.
+function mouseHover (e) {
+    for (var i =0; i<moviesInfo.length; i++) {
+        if (e.target.id == ("text" + i)) {
+            document.getElementById(("img"+i)).style.visibility = "visible";
+            document.getElementById(("item"+i)).style.height = "500px";
+        } if (e.target.id !== ("text" + i)) {
+            document.getElementById(("img"+i)).style.visibility = "hidden";
+            document.getElementById(("item" + i)).style.height = "auto";
+            }
+    }
 };
 
 
-
-
-
+/*
 // HomeWork using Jquery (makes it much shorter)
 $("#search-box").keyup(function(){
     var searchTerm = $("#search-box").val();
     var jsonFile = "http://www.omdbapi.com/?s=" + searchTerm;
     $.getJSON(jsonFile,function(data){
-    
-        var items = [];
-        $.each(data,function(key,value) {
-            items.push(value);
-        });
-        var output = '<ul id= "list">';
-        $.each(items[0], function(key,value){
-            output += '<li class="item">';
-            output += '<a href=' + "http://www.imdb.com/title/" + value.imdbID +'>';
-            output += '<h2 class="text">' + value.Title +' ' + value.Year + '</h2>';
-            output += '<img class="images" src=' + value.Poster +'>'
-            output += '</a>'
-            output += '</li>';
-        });
-        output += '</ul>'
-        $("#container").html(output);
-        $(".images").addClass("images");
-        $(".item").hover(function(){
-            console.log("Hovered");
-            $( this ).find("img").removeClass("images");
-        }, function(){
-            $( this ).find("img").addClass("images");
-        })
-        
-        
+        if (data.Response === 'False') {
+            var warningMessage = '<p id="warning-message">Sorry, We cant find any results for your search. Please enter other search terms</p>'
+            $("#container").html("");
+            $("#container").append(warningMessage);
+        } else {
+           var items = [];
+            $.each(data,function(key,value) {
+                items.push(value);
+            });
+            var output = '<ul id= "list">';
+            $.each(items[0], function(key,value){
+                output += '<li class="item">';
+                output += '<a href=' + "http://www.imdb.com/title/" + value.imdbID +'>';
+                output += '<h2 class="text">' + value.Title +' ' + value.Year + '</h2>';
+                output += '<img class="images" src=' + value.Poster +'>'
+                output += '</a>'
+                output += '</li>';
+            });
+            output += '</ul>'
+            $("#container").html(output);
+            $(".images").addClass("images");
+            $(".item").hover(function(){
+                $( this ).find("img").removeClass("images");
+            }, function(){
+                $( this ).find("img").addClass("images");
+            })
+        }
+         
     });
 
 });
-
+*/
 
 // My old homework 
 /*
