@@ -1,4 +1,4 @@
-// Please comment out one of the two scripts in order to keep everything working fine
+// Please comment out one of the two scripts in order to keep everything working fine. So it should be either the JavaScript or the Jquery code.
 // Home work using only JavaScript with an extra condition to check if the search box is empty
 var searchBox = document.getElementById("search-box");
 var listDiv = document.getElementById("container");
