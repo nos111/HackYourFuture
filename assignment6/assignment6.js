@@ -1,3 +1,4 @@
+'use strict';
 var info;
 var userName = 'nos111';
 var reposInfo;
