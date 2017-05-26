@@ -6,18 +6,21 @@ var hoverEvent;
 
 document.getElementById("user-name-button").addEventListener('click',initSearch);
 
+// function to initiate the search when clicked on the search button
 function initSearch (){
     document.getElementById("info").innerHTML = "";
     var link = inputCatcher();
     dataRequest(link,processData);    
 }
 
-function init (){
+// this function will load the page with my profile
+function initOnLoad (){
     var link = 'https://api.github.com/users/nos111';
     dataRequest(link,processData);    
 }
 
-function dataRequest(link,callBack) { //Make a data request to the API
+//Make a data request to the API
+function dataRequest(link,callBack) { 
     var request = new XMLHttpRequest();
     request.onreadystatechange = function(){
         if(request.readyState === 4) {
@@ -40,7 +43,7 @@ function inputCatcher () {
     } 
 }
 
-//Processes the returned data from the request
+//Processes the returned data from the profile search
 //When the request is done this function will be activated
 function processData (response) { 
             var dataFile = JSON.parse(response);
@@ -110,7 +113,7 @@ function requestCollaboratorsInfo () {
     dataRequest(link,collaboratorsRequest);
 }
 
-//Request extra data when hovered over repo
+//process extra repos data when hovered over repoName
 function collaboratorsRequest(data) {
     var collaboratorsInfo = JSON.parse(data);
     //Make sure we have got data 
@@ -127,4 +130,4 @@ function collaboratorsRequest(data) {
 }
 
 
-init();
+initOnLoad();
