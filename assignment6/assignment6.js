@@ -59,16 +59,16 @@ function processData (response) {
 //Creates profile html elements
 function createProfile (data) {
     info = data;
-    createElement("section","info",'<a href="#">'+data.name+" profile","id","name").addEventListener('click',nameClick);
-    createElement("section","info",'<a href="#">'+"Number of public repos is "+data.public_repos,"id","repos");
-    createElement("a","info",'<img src="'+data.avatar_url+'">',"href",data.html_url,"target","_blank");
+    createElement("section","info",'<a href="#">'+data.name+" profile",[["id","name"]]).addEventListener('click',nameClick);
+    createElement("section","info",'<a href="#">'+"Number of public repos is "+data.public_repos,[["id","repos"]]);
+    createElement("a","info",'<img src="'+data.avatar_url+'">',[["href",data.html_url],["target","_blank"]]);
     document.getElementById("repos").addEventListener('click',reposInit);
 }
 
 //creates extra info elements when clicked on the name
 function nameClick(){ 
     if (document.getElementById("memeber-since") === null) { //Make sure the list is loaded only once
-        createElement("p","name","Git member since "+info.created_at,"id","memeber-since");
+        createElement("p","name","Git member since "+info.created_at,[["id","memeber-since"]]);
         createElement('p','name','Git ID:'+info.id);
     }
 }
@@ -84,9 +84,9 @@ function reposInit(){
 function createReposElements(data) {
     reposInfo = JSON.parse(data);
     if(reposInfo[0] !== undefined) {
-        createElement('ul','repos',undefined,'id','repos-list');
+        createElement('ul','repos',undefined,[['id','repos-list']]);
         reposInfo.forEach( function(object,i){
-            createElement('li','repos-list',object.name,'id',i,'class','repo').addEventListener('mouseover',reposHover);
+            createElement('li','repos-list',object.name,[['id',i],['class','repo']]).addEventListener('mouseover',reposHover);
         });
     }
 }
@@ -98,9 +98,9 @@ function reposHover(mouseHover){
     document.getElementById(hoverEvent.target.id).removeEventListener('mouseover',reposHover);
     //make sure we have got data back from the request
     if (reposInfo[parseInt(mouseHover.target.id)] !== undefined) { 
-        createElement('aside',mouseHover.target.id,reposInfo[parseInt(mouseHover.target.id)].description,'class','repos-description');
-        createElement('aside',mouseHover.target.id,'Created at ' + reposInfo[parseInt(mouseHover.target.id)].created_at,'class','repos-description');
-        createElement('aside',mouseHover.target.id,'Number of open issues ' + reposInfo[parseInt(mouseHover.target.id)].created_at,'class','repos-description');
+        createElement('aside',mouseHover.target.id,reposInfo[parseInt(mouseHover.target.id)].description,[['class','repos-description']]);
+        createElement('aside',mouseHover.target.id,'Created at ' + reposInfo[parseInt(mouseHover.target.id)].created_at,[['class','repos-description']]);
+        createElement('aside',mouseHover.target.id,'Number of open issues ' + reposInfo[parseInt(mouseHover.target.id)].created_at,[['class','repos-description']]);
         requestCollaboratorsInfo();
     }
     
@@ -120,7 +120,7 @@ function collaboratorsRequest(data) {
     if(collaboratorsInfo[0] !== undefined){
         createElement('p',hoverEvent.target.id,'Latest event:');
         collaboratorsInfo.forEach(function(object,index){
-            createElement('p',hoverEvent.target.id,'Type of evevnt: ' + object.type,'id',index+'collaborator');
+            createElement('p',hoverEvent.target.id,'Type of evevnt: ' + object.type,[['id',index+'collaborator']]);
             if (object.type == "PushEvent") {
             createElement('p',hoverEvent.target.id,'Committ: ' + object.payload.commits[0].message);
             }
