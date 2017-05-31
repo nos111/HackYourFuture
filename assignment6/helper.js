@@ -1,22 +1,42 @@
-function createElement (type, id, message,attributes) { // This function will take the warning message and append it
-    var element = document.createElement(type);
-    var parent = document.getElementById(id);
-    if(attributes !== undefined) {
+function createElement (htmlElement) { // This function will take the warning message and append it
+    var element = document.createElement(htmlElement.type);
+    var parent = document.getElementById(htmlElement.parentId);
+    if(htmlElement.attribute !== undefined) {
         function buildAtributes(key,value){
             element.setAttribute(value,key)
         }
-        new Map(attributes).forEach(buildAtributes);
+        new Map(htmlElement.attribute).forEach(buildAtributes);
     }
-    if (message !== undefined) {
-        element.innerHTML = message;
+    if (htmlElement.text !== undefined) {
+        element.innerHTML = htmlElement.text;
     }
-    if (id !== undefined) {
+    if (htmlElement.parentId !== undefined) {
        parent.appendChild(element);
     }
     
     return element;
 }
 
+////second version
+//function createsElement (type, id, message,attributes) { // This function will take the warning message and append it
+//    var element = document.createElement(type);
+//    var parent = document.getElementById(id);
+//    if(attributes !== undefined) {
+//        function buildAtributes(key,value){
+//            element.setAttribute(value,key)
+//        }
+//        new Map(attributes).forEach(buildAtributes);
+//    }
+//    if (message !== undefined) {
+//        element.innerHTML = message;
+//    }
+//    if (id !== undefined) {
+//       parent.appendChild(element);
+//    }
+//    
+//    return element;
+//}
+//first version of create element
 /*function createElement (type, id, message,attribute, attributeData,secondAttribute,secondAttributeData,thirdAttribute,thirdAttibuteData) { // This function will take the warning message and append it
     var element = document.createElement(type);
     var parent = document.getElementById(id);

@@ -59,17 +59,41 @@ function processData (response) {
 //Creates profile html elements
 function createProfile (data) {
     info = data;
-    createElement("section","info",'<a href="#">'+data.name+" profile",[["id","name"]]).addEventListener('click',nameClick);
-    createElement("section","info",'<a href="#">'+"Number of public repos is "+data.public_repos,[["id","repos"]]);
-    createElement("a","info",'<img src="'+data.avatar_url+'">',[["href",data.html_url],["target","_blank"]]);
+    var profileSection = {type:'section',
+                          parentId:'info',
+                          text:'<a href="#">'+data.name+" profile",
+                          attribute:[["id","name"]]
+                         };
+    createElement(profileSection).addEventListener('click',nameClick);
+    var reposSection = {type:'section',
+                        text:'<a href="#">'+"Number of public repos is "+data.public_repos,
+                        parentId:'info',
+                        attribute:[["id","repos"]]
+                       };
+    createElement(reposSection);
+    var profileImg = {type:'a',
+                      parentId:'info',
+                      text:'<img src="'+data.avatar_url+'">',
+                      attritbute:[["href",data.html_url],["target","_blank"]]
+                     };
+    createElement(profileImg);
     document.getElementById("repos").addEventListener('click',reposInit);
 }
 
 //creates extra info elements when clicked on the name
 function nameClick(){ 
     if (document.getElementById("memeber-since") === null) { //Make sure the list is loaded only once
-        createElement("p","name","Git member since "+info.created_at,[["id","memeber-since"]]);
-        createElement('p','name','Git ID:'+info.id);
+        var paragraphMemberSince = {type:'p',
+                                    parentId:'name',
+                                    text:"Git member since "+info.created_at,
+                                    attribute:[["id","memeber-since"]]
+                                   };
+        createElement(paragraphMemberSince);
+        var paragraphGitId = {type:'p',
+                              parentId:'name',
+                              text:'Git ID:'+info.id
+                             };
+        createElement(paragraphGitId);
     }
 }
 
@@ -84,9 +108,18 @@ function reposInit(){
 function createReposElements(data) {
     reposInfo = JSON.parse(data);
     if(reposInfo[0] !== undefined) {
-        createElement('ul','repos',undefined,[['id','repos-list']]);
+        var reposUl = {type:'ul',
+                       parentId:'repos',
+                       attribute:[['id','repos-list']]
+                      };
+        createElement(reposUl);
         reposInfo.forEach( function(object,i){
-            createElement('li','repos-list',object.name,[['id',i],['class','repo']]).addEventListener('mouseover',reposHover);
+            var repoLi = {type:'li',
+                          parentId:'repos-list',
+                          text:object.name,
+                          attribute:[['id',i],['class','repo']]
+                         };
+            createElement(repoLi).addEventListener('mouseover',reposHover);
         });
     }
 }
@@ -98,9 +131,24 @@ function reposHover(mouseHover){
     document.getElementById(hoverEvent.target.id).removeEventListener('mouseover',reposHover);
     //make sure we have got data back from the request
     if (reposInfo[parseInt(mouseHover.target.id)] !== undefined) { 
-        createElement('aside',mouseHover.target.id,reposInfo[parseInt(mouseHover.target.id)].description,[['class','repos-description']]);
-        createElement('aside',mouseHover.target.id,'Created at ' + reposInfo[parseInt(mouseHover.target.id)].created_at,[['class','repos-description']]);
-        createElement('aside',mouseHover.target.id,'Number of open issues ' + reposInfo[parseInt(mouseHover.target.id)].created_at,[['class','repos-description']]);
+        var repoDescriptionAside = {type:'aside',
+                                    parentId:mouseHover.target.id,
+                                    text:reposInfo[parseInt(mouseHover.target.id)].description,
+                                    attribute:[['class','repos-description']]
+                                   };
+        createElement(repoDescriptionAside);
+        var repoCreatedAt = {type:'aside',
+                             parentId:mouseHover.target.id,
+                             text:'Created at ' + reposInfo[parseInt(mouseHover.target.id)].created_at,
+                             attribute:[['class','repos-description']]
+                            };
+        createElement(repoCreatedAt);
+        var openIssues = {type:'aside',
+                          parentId:mouseHover.target.id,
+                          text:'Number of open issues ' + reposInfo[parseInt(mouseHover.target.id)].open_issues,
+                          attribute:[['class','repos-description']]
+                         };
+        createElement(openIssues);
         requestCollaboratorsInfo();
     }
     
@@ -122,11 +170,23 @@ function buildExtraReposInfo(data) {
     var collaboratorsInfo = JSON.parse(data);
     //Make sure we have got data 
     if(collaboratorsInfo[0] !== undefined){
-        createElement('p',hoverEvent.target.id,'Latest event:');
+        var latestEvent = {type:'p',
+                           parentId:hoverEvent.target.id,
+                           text:'Latest events:'
+                          };
+        createElement(latestEvent);
         collaboratorsInfo.forEach(function(object,index){
-            createElement('p',hoverEvent.target.id,'Type of evevnt: ' + object.type,[['id',index+'collaborator']]);
+            var typeOfEvent = {type:'p',
+                               parentId:hoverEvent.target.id,
+                               text:object.type,
+                               attribute:[['id',index+'collaborator']]
+                              };
+            createElement(typeOfEvent);
             if (object.type == "PushEvent") {
-            createElement('p',hoverEvent.target.id,'Committ: ' + object.payload.commits[0].message);
+                var latestCommit = {type:'p',
+                                    parentId:hoverEvent.target.id,
+                                    text:'Committ: ' + object.payload.commits[0].message}
+                createElement(latestCommit);
             }
         });
     }
