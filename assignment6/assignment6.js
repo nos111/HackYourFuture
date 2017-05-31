@@ -15,7 +15,7 @@ function initSearch (){
 
 // this function will load the page with my profile
 function initOnLoad (){
-    var link = 'https://api.github.com/users/nos111';
+    var link = 'https://api.github.com/users/' + userName;
     dataRequest(link,processData);    
 }
 
