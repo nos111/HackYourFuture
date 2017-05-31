@@ -109,12 +109,16 @@ function reposHover(mouseHover){
 
 //Make APIT call to get collaborators info
 function requestCollaboratorsInfo () {
-    var link = 'https://api.github.com/repos/' + userName + '/' + reposInfo[parseInt(hoverEvent.target.id)].name +'/events';
-    dataRequest(link,collaboratorsRequest);
+    var link = 'https://api.github.com/repos/'
+        + userName 
+        + '/'
+        + reposInfo[parseInt(hoverEvent.target.id)].name
+        +'/events';
+    dataRequest(link,buildExtraReposInfo);
 }
 
 //process extra repos data when hovered over repoName
-function collaboratorsRequest(data) {
+function buildExtraReposInfo(data) {
     var collaboratorsInfo = JSON.parse(data);
     //Make sure we have got data 
     if(collaboratorsInfo[0] !== undefined){
