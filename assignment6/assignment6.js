@@ -1,5 +1,5 @@
 'use strict';
-var info;
+var info = {};
 var userName = 'nos111';
 var reposInfo;
 var hoverEvent;
@@ -58,23 +58,28 @@ function processData (response) {
 
 //Creates profile html elements
 function createProfile (data) {
-    info = data;
+    info.name = data.name;
+    info.puplic_repos = data.public_repos;
+    info.avatar_url = data.avatar_url;
+    info.html_url = data.html_url;
+    info.created_at = data.created_at;
+    info.id = data.id;
     var profileSection = {type:'section',
                           parentId:'info',
-                          text:'<a href="#">'+data.name+" profile",
+                          text:'<a href="#">'+info.name+" profile",
                           attribute:[["id","name"]]
                          };
     createElement(profileSection).addEventListener('click',nameClick);
     var reposSection = {type:'section',
-                        text:'<a href="#">'+"Number of public repos is "+data.public_repos,
+                        text:'<a href="#">'+"Number of public repos is "+info.public_repos,
                         parentId:'info',
                         attribute:[["id","repos"]]
                        };
     createElement(reposSection);
     var profileImg = {type:'a',
                       parentId:'info',
-                      text:'<img src="'+data.avatar_url+'">',
-                      attritbute:[["href",data.html_url],["target","_blank"]]
+                      text:'<img src="'+info.avatar_url+'">',
+                      attritbute:[["href",info.html_url],["target","_blank"]]
                      };
     createElement(profileImg);
     document.getElementById("repos").addEventListener('click',reposInit);
@@ -116,10 +121,14 @@ function createReposElements(data) {
         reposInfo.forEach( function(object,i){
             var repoLi = {type:'li',
                           parentId:'repos-list',
-                          text:object.name,
                           attribute:[['id',i],['class','repo']]
                          };
             createElement(repoLi).addEventListener('mouseover',reposHover);
+            var repoNameElement = {type:'h4',
+                                   parentId:i,
+                                   text:object.name
+                                  };
+            createElement(repoNameElement)
         });
     }
 }

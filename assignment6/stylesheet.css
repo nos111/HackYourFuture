@@ -1,14 +1,19 @@
 .repo {
-    width: 50%;
+    width: 40%;
+    height: 200px;
     border: 1px;
     border-style: solid;
     overflow: auto;
 }
 
 .repos-description {
+    width: 100%;
     float: right;
     clear: right;
     display: block;
     border: 1px;
     border-style: dotted;
+}
+#name {
+    height: 100px;
 }
