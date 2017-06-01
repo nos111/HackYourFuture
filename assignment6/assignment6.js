@@ -162,7 +162,7 @@ function createReposElements(data) {
                        attribute:[['id','repos-list']]
                       };
         createElement(reposUl);
-        reposInfo.forEach( function(object,i){
+        reposInfo.map( function(object,i){
             var repoLi = {type:'li',
                           parentId:'repos-list',
                           attribute:[['id',i],['class','repo']]
@@ -231,7 +231,7 @@ function buildExtraReposInfo(data) {
                            text:'Latest events:'
                           };
         createElement(latestEvent);
-        collaboratorsInfo.forEach(function(object,index){
+        collaboratorsInfo.map(function(object,index){
             var typeOfEvent = {type:'p',
                                parentId:hoverEvent.target.id,
                                text:object.type,
