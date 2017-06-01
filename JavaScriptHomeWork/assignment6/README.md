@@ -13,3 +13,7 @@ When hovering over the name of the repo, it will show on the right side of the p
 Shows the collaborators of that repo. through ANOTHER API call to https://api.github.com/repos/user/repo/events and that lists the 3 last events. Show the type of the event and if the type is 'PushEvent' show the commit message.
 
 When a user goes to this app, My github account info is loaded. They can then use the search field to find info about other github accounts.
+
+-Implemented promises in your XHR
+-Added polling to your SPA and make sure new info is loaded every 60 seconds.
+-Implemented a loader icon 
