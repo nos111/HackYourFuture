@@ -10,26 +10,36 @@ document.getElementById("user-name-button").addEventListener('click',initSearch)
 function initSearch (){
     document.getElementById("info").innerHTML = "";
     var link = inputCatcher();
-    dataRequest(link,processData);    
+    var promise = new Promise(function(resolve,reject){
+        resolve(link);
+    });
+    promise.then(dataRequest).then(processData).then(createProfile); 
 }
 
 // this function will load the page with my profile
 function initOnLoad (){
     var link = 'https://api.github.com/users/' + userName;
-    dataRequest(link,processData);    
+    var promise = new Promise(function(resolve,reject){
+        resolve(link);
+    });
+    promise.then(dataRequest).then(processData).then(createProfile);
 }
 
 //Make a data request to the API
-function dataRequest(link,callBack) { 
-    var request = new XMLHttpRequest();
-    request.onreadystatechange = function(){
-        if(request.readyState === 4) {
-            if(typeof callBack == 'function')
-                callBack(request.responseText);
-        }
-    };
-    request.open('GET',link);
-    request.send();
+function dataRequest(link) { 
+    return new Promise(function(resolve,reject){
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function(){
+            if(request.readyState === 4) {
+                resolve(request.responseText);
+            }
+        };
+        request.open('GET',link);
+        request.onerror = function(){
+            reject(Error('Network error'));
+        };
+        request.send();
+    })
 }
 
 //catches username and check for good user input
@@ -52,14 +62,15 @@ function processData (response) {
                 document.getElementById("warning-message").innerHTML = "Please enter a valid user name";
         } else {
             document.getElementById("warning-message").innerHTML = "";
-            createProfile(dataFile);
+            return dataFile;
             }
     }
 
 //Creates profile html elements
 function createProfile (data) {
+    console.log(data.public_repos)
     info.name = data.name;
-    info.puplic_repos = data.public_repos;
+    info.public_repos = data.public_repos;
     info.avatar_url = data.avatar_url;
     info.html_url = data.html_url;
     info.created_at = data.created_at;
@@ -105,8 +116,11 @@ function nameClick(){
 //Start building repos section
 function reposInit(){
     var link = 'https://api.github.com/users/'+ userName + '/repos';
+    var promise = new Promise(function(resolve,reject){
+        resolve(link);
+    });
     if (document.getElementById('repos-list') === null) //Make sure the list is only created once
-        dataRequest(link,createReposElements);
+        promise.then(dataRequest).then(createReposElements);
 }
 
 //Initiate repos
@@ -171,7 +185,10 @@ function requestCollaboratorsInfo () {
         + '/'
         + reposInfo[parseInt(hoverEvent.target.id)].name
         +'/events';
-    dataRequest(link,buildExtraReposInfo);
+    var promise = new Promise(function(resolve,reject){
+        resolve(link);
+    })
+    promise.then(dataRequest).then(buildExtraReposInfo);
 }
 
 //process extra repos data when hovered over repoName
