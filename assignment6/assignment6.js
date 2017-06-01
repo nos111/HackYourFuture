@@ -3,6 +3,7 @@ var info = {};
 var userName = 'nos111';
 var reposInfo;
 var hoverEvent;
+var interval;
 
 document.getElementById("user-name-button").addEventListener('click',initSearch);
 
@@ -68,7 +69,6 @@ function processData (response) {
 
 //Creates profile html elements
 function createProfile (data) {
-    console.log(data.public_repos)
     info.name = data.name;
     info.public_repos = data.public_repos;
     info.avatar_url = data.avatar_url;
@@ -94,6 +94,7 @@ function createProfile (data) {
                      };
     createElement(profileImg);
     document.getElementById("repos").addEventListener('click',reposInit);
+    document.getElementById('repos').addEventListener('click',interval);
 }
 
 //creates extra info elements when clicked on the name
@@ -114,15 +115,28 @@ function nameClick(){
 }
 
 //Start building repos section
+
 function reposInit(){
     var link = 'https://api.github.com/users/'+ userName + '/repos';
-    var promise = new Promise(function(resolve,reject){
-        resolve(link);
-    });
-    if (document.getElementById('repos-list') === null) //Make sure the list is only created once
+    var promise = Promise.resolve(link);
+    if (document.getElementById('repos-list') === null){ //Make sure the list is only created once
         promise.then(dataRequest).then(createReposElements);
+    }else{
+        var parent = document.getElementById('repos');
+        var child = document.getElementById('repos-list');
+        parent.removeChild(child);
+        promise.then(dataRequest).then(createReposElements);
+    }
 }
 
+//poll the repos section data every minute to make sure it's up to date
+function interval (){
+    document.getElementById('repos').removeEventListener('click',interval);
+    clearInterval(interval);
+    interval = setInterval(reposInit,6000);
+    
+    console.trace(interval)
+}
 //Initiate repos
 function createReposElements(data) {
     reposInfo = JSON.parse(data);
