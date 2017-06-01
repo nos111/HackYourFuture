@@ -14,6 +14,8 @@ Shows the collaborators of that repo. through ANOTHER API call to https://api.gi
 
 When a user goes to this app, My github account info is loaded. They can then use the search field to find info about other github accounts.
 
--Implemented promises in your XHR
+-Implemented promises XHR
+
 -Added polling to your SPA and make sure new info is loaded every 60 seconds.
+
 -Implemented a loader icon 
