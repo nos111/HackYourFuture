@@ -4,6 +4,8 @@ var userName = 'nos111';
 var reposInfo;
 var hoverEvent;
 var interval;
+var loaderEl = document.getElementById("resultLoader");
+console.log(loaderEl.classList)
 
 document.getElementById("user-name-button").addEventListener('click',initSearch);
 
@@ -11,19 +13,31 @@ document.getElementById("user-name-button").addEventListener('click',initSearch)
 function initSearch (){
     document.getElementById("info").innerHTML = "";
     var link = inputCatcher();
-    var promise = new Promise(function(resolve,reject){
-        resolve(link);
-    });
-    promise.then(dataRequest).then(processData).then(createProfile); 
+    var promise = Promise.resolve(link);
+    promise.then(function(resolve,reject){
+        loaderEl.classList.remove("invisible");
+        console.log(loaderEl.classList)
+        return dataRequest(resolve);
+    }).then(processData).then(function(resolve,reject){
+         loaderEl.classList.add("invisible");
+        console.log(loaderEl.classList)
+        return createProfile(resolve);
+    }); 
 }
 
 // this function will load the page with my profile
 function initOnLoad (){
     var link = 'https://api.github.com/users/' + userName;
-    var promise = new Promise(function(resolve,reject){
-        resolve(link);
-    });
-    promise.then(dataRequest).then(processData).then(createProfile);
+    var promise = Promise.resolve(link);
+    promise.then(function(resolve,reject){
+        loaderEl.classList.remove("invisible");
+        console.log(loaderEl.classList)
+        return dataRequest(resolve);
+    }).then(processData).then(function(resolve,reject){
+         loaderEl.classList.add("invisible");
+        console.log(loaderEl.classList)
+        return createProfile(resolve);
+    }); 
 }
 
 //Make a data request to the API
@@ -63,18 +77,20 @@ function processData (response) {
                 document.getElementById("warning-message").innerHTML = "Please enter a valid user name";
         } else {
             document.getElementById("warning-message").innerHTML = "";
-            return dataFile;
+            info.name = dataFile.name;
+            info.public_repos = dataFile.public_repos;
+            info.avatar_url = dataFile.avatar_url;
+            info.html_url = dataFile.html_url;
+            info.created_at = dataFile.created_at;
+            info.id = dataFile.id;
+            return info;
             }
     }
 
 //Creates profile html elements
 function createProfile (data) {
-    info.name = data.name;
-    info.public_repos = data.public_repos;
-    info.avatar_url = data.avatar_url;
-    info.html_url = data.html_url;
-    info.created_at = data.created_at;
-    info.id = data.id;
+   
+    
     var profileSection = {type:'section',
                           parentId:'info',
                           text:'<a href="#">'+info.name+" profile",
@@ -133,7 +149,7 @@ function reposInit(){
 function interval (){
     document.getElementById('repos').removeEventListener('click',interval);
     clearInterval(interval);
-    interval = setInterval(reposInit,6000);
+    interval = setInterval(reposInit,60000);
     
     console.trace(interval)
 }
