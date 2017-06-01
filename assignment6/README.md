@@ -1,6 +1,0 @@
-Make a call to 'https://api.github.com/users/' + userInput (where userInput is a string typed into a searchfield by a user). You can do this by using some of the code of the previous week. Look at the response data.
-show the users name, avatar image (not the link to the image!) and the number of public repos they have
-When clicking on the users name, show all the other info you have about that user. When clicking on the avatar image, open their github profile in a new tab. When clicking on the number of public repos, make another API call to 'https://api.github.com/users/user/repos' and build an unorderdered list of the returned repos with just the name of each repo.
-When hovering over the name of the repo, show on the right side of the page in an <aside> element the description of that repo, when it was created, and the number of open issues it has.
-Shows the collaborators of that repo. through ANOTHER API call to https://api.github.com/repos/user/repo/events and that lists the 3 last events. Show the type of the event and if the type is 'PushEvent' show the commit message.
-When a user goes to this app, My github account info is loaded. They can then use the search field to find info about other github accounts.
