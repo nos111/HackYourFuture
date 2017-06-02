@@ -8,7 +8,6 @@ var loaderEl = document.getElementById("resultLoader");
 var reposlink;
 
 document.getElementById("user-name-button").addEventListener('click',initSearch);
-document.getElementById("user-name-button").addEventListener('click',checkReposChange);
 
 // function to initiate the search when clicked on the search button
 function initSearch (){
@@ -142,20 +141,25 @@ function reposInit(){
     }
 }
 
+// checks if there is a change on the repos. Will check for deleted and added repos. Will also check for new push and update the list.
 function checkReposChange(){
-    var reposUpdatedOriginal = reposInfo.map(repo => repo.updated_at)
+    // first make a copy of the current repos push events.
+    var reposUpdatedOriginal = reposInfo.map(repo => repo.pushed_at)
     console.log(reposUpdatedOriginal)
     var link = reposlink;
     var promise = Promise.resolve(link);
+    // make a new API call to get new data over the repos
     promise.then(dataRequest).then(function(resolve,reject){
-        var reposUpdatedNew = JSON.parse(resolve).map(repo => repo.updated_at);
+        var reposUpdatedNew = JSON.parse(resolve).map(repo => repo.pushed_at);
         return reposUpdatedNew;
     }).then(function(resolve,reject){
         console.log(resolve)
+        // check for added or removed repos
         if(resolve.length !== reposUpdatedOriginal.length){
             console.log('extra repo');
             reposInit();
         }
+        // if the number of repos didn't change, check for new push events
         if(resolve.length === reposUpdatedOriginal.length){
             for (var i =0; i < reposUpdatedOriginal.length; i++){
                 if(resolve[i] !== reposUpdatedOriginal[i]){
@@ -174,7 +178,7 @@ function checkReposChange(){
 function interval (){
     document.getElementById('repos').removeEventListener('click',interval);
     clearInterval(interval);
-    interval = setInterval(reposInit,60000);
+    interval = setInterval(checkReposChange,20000);
     
     console.trace(interval)
 }
