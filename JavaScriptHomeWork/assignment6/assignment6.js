@@ -5,9 +5,10 @@ var reposInfo;
 var hoverEvent;
 var interval;
 var loaderEl = document.getElementById("resultLoader");
-console.log(loaderEl.classList)
+var reposlink;
 
 document.getElementById("user-name-button").addEventListener('click',initSearch);
+document.getElementById("user-name-button").addEventListener('click',checkReposChange);
 
 // function to initiate the search when clicked on the search button
 function initSearch (){
@@ -16,11 +17,9 @@ function initSearch (){
     var promise = Promise.resolve(link);
     promise.then(function(resolve,reject){
         loaderEl.classList.remove("invisible");
-        console.log(loaderEl.classList)
         return dataRequest(resolve);
     }).then(processData).then(function(resolve,reject){
          loaderEl.classList.add("invisible");
-        console.log(loaderEl.classList)
         return createProfile(resolve);
     }); 
 }
@@ -31,11 +30,9 @@ function initOnLoad (){
     var promise = Promise.resolve(link);
     promise.then(function(resolve,reject){
         loaderEl.classList.remove("invisible");
-        console.log(loaderEl.classList)
         return dataRequest(resolve);
     }).then(processData).then(function(resolve,reject){
          loaderEl.classList.add("invisible");
-        console.log(loaderEl.classList)
         return createProfile(resolve);
     }); 
 }
@@ -133,8 +130,8 @@ function nameClick(){
 //Start building repos section
 
 function reposInit(){
-    var link = 'https://api.github.com/users/'+ userName + '/repos';
-    var promise = Promise.resolve(link);
+    reposlink = 'https://api.github.com/users/'+ userName + '/repos';
+    var promise = Promise.resolve(reposlink);
     if (document.getElementById('repos-list') === null){ //Make sure the list is only created once
         promise.then(dataRequest).then(createReposElements);
     }else{
@@ -144,6 +141,34 @@ function reposInit(){
         promise.then(dataRequest).then(createReposElements);
     }
 }
+
+function checkReposChange(){
+    var reposUpdatedOriginal = reposInfo.map(repo => repo.updated_at)
+    console.log(reposUpdatedOriginal)
+    var link = reposlink;
+    var promise = Promise.resolve(link);
+    promise.then(dataRequest).then(function(resolve,reject){
+        var reposUpdatedNew = JSON.parse(resolve).map(repo => repo.updated_at);
+        return reposUpdatedNew;
+    }).then(function(resolve,reject){
+        console.log(resolve)
+        if(resolve.length !== reposUpdatedOriginal.length){
+            console.log('extra repo');
+            reposInit();
+        }
+        if(resolve.length === reposUpdatedOriginal.length){
+            for (var i =0; i < reposUpdatedOriginal.length; i++){
+                if(resolve[i] !== reposUpdatedOriginal[i]){
+                    console.log('repo updated')
+                    reposInit()
+                }
+            }
+        }
+    })
+
+    
+}
+
 
 //poll the repos section data every minute to make sure it's up to date
 function interval (){
@@ -156,6 +181,7 @@ function interval (){
 //Initiate repos
 function createReposElements(data) {
     reposInfo = JSON.parse(data);
+    console.log(reposInfo)
     if(reposInfo[0] !== undefined) {
         var reposUl = {type:'ul',
                        parentId:'repos',

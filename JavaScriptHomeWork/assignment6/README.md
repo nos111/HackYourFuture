@@ -16,6 +16,6 @@ When a user goes to this app, My github account info is loaded. They can then us
 
 -Implemented promises XHR
 
--Added polling to your SPA and make sure new info is loaded every 60 seconds.
+-Added polling to SPA to make sure new info is loaded every 60 seconds.
 
 -Implemented a loader icon 
